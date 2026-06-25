@@ -50,6 +50,22 @@ function detailRows(booking) {
   ];
 }
 
+async function previewRunSheet(bookingId) {
+  try {
+    const response = await fetch(`${API_BASE}/admin/runsheet/${bookingId}?adminKey=${encodeURIComponent(getAdminKey())}`);
+    const body = await response.text();
+    if (!response.ok) {
+      showAdminMessage("Unable to load run sheet.", "error");
+      return;
+    }
+    const url = URL.createObjectURL(new Blob([body], { type: "text/html" }));
+    window.open(url, "_blank", "noopener");
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  } catch {
+    showAdminMessage("Unable to load run sheet.", "error");
+  }
+}
+
 function renderBookings() {
   const filter = statusFilter.value;
   const visibleBookings = filter === "all" ? bookings : bookings.filter((booking) => booking.status === filter);
@@ -69,7 +85,6 @@ function renderBookings() {
     const detailsGrid = card.querySelector(".details-grid");
     const adminNotes = card.querySelector(".admin-notes");
     const runSheetLink = card.querySelector(".run-sheet-link");
-    const runSheetDownloadLink = card.querySelector(".run-sheet-download-link");
     const calendarStatus = card.querySelector(".calendar-status");
 
     article.dataset.bookingId = booking.id;
@@ -78,8 +93,7 @@ function renderBookings() {
     statusPill.classList.add(`status-pill--${booking.status}`);
     summary.textContent = `${booking.roomsRequired?.join(", ") || booking.room} - ${formatDateTime(booking)}`;
     adminNotes.value = booking.adminNotes || "";
-    runSheetLink.href = `${API_BASE}/admin/runsheet/${booking.id}?adminKey=${encodeURIComponent(getAdminKey())}`;
-    runSheetDownloadLink.href = `${API_BASE}/admin/runsheet/${booking.id}/download?adminKey=${encodeURIComponent(getAdminKey())}`;
+    runSheetLink.addEventListener("click", () => previewRunSheet(booking.id));
     calendarStatus.textContent = calendarText(booking.calendar);
     if (booking.calendar?.htmlLink) {
       const calendarLink = document.createElement("a");
