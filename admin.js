@@ -76,24 +76,39 @@ function buildRunSheetHtml(booking, adminNotes = "") {
   <meta charset="utf-8">
   <title>Run Sheet - ${escapeHtml(booking.eventTitle)}</title>
   <style>
-    body{font-family:Arial,sans-serif;color:#301548;line-height:1.45}
-    main{max-width:900px;margin:0 auto;padding:36px 20px}
-    h1{font-size:32px;margin:0 0 8px} h2{margin:0 0 18px}
-    .meta{background:#fff9f2;border:1px solid #e6d8ee;border-radius:14px;padding:14px;margin:18px 0}
-    table{border-collapse:collapse;width:100%;margin-top:18px}
-    th,td{border:1px solid #e6d8ee;padding:12px;text-align:left;vertical-align:top}
-    th{background:#fff9f2}
+    :root{--text:#301548;--muted:#6f617b;--line:#e6d8ee;--cream:#fff9f2;--primary:#5b2d82;--accent:#d8a12b}
+    *{box-sizing:border-box}
+    body{font-family:Arial,sans-serif;color:var(--text);line-height:1.45;margin:0;background:#f8f4fb}
+    main{max-width:980px;margin:0 auto;padding:32px 20px}
+    .sheet{background:#fff;border:1px solid var(--line);border-radius:22px;padding:28px}
+    .sheet-header{align-items:flex-start;border-bottom:3px solid var(--primary);display:flex;gap:16px;justify-content:space-between;margin-bottom:22px;padding-bottom:18px}
+    .eyebrow{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.14em;margin:0 0 8px;text-transform:uppercase}
+    h1{font-size:34px;line-height:1.05;margin:0} h2{font-size:18px;margin:26px 0 12px}
+    .print-button{background:var(--accent);border:0;border-radius:999px;color:var(--text);cursor:pointer;font-weight:900;padding:12px 18px;white-space:nowrap}
+    .meta{background:var(--cream);border:1px solid var(--line);border-radius:14px;display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr));padding:14px;margin:18px 0}
+    .meta p{margin:0}
+    table{border-collapse:collapse;width:100%;margin-top:12px}
+    th,td{border:1px solid var(--line);padding:12px;text-align:left;vertical-align:top}
+    th{background:var(--cream)}
+    .notes{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}
+    @media print{body{background:#fff}main{max-width:none;padding:0}.sheet{border:0;border-radius:0;padding:0}.print-button{display:none}.meta{break-inside:avoid}table{break-inside:auto}tr{break-inside:avoid}}
   </style>
 </head>
 <body>
   <main>
-    <h1>${escapeHtml(booking.eventTitle)}</h1>
-    <h2>Run Sheet</h2>
-    <div class="meta">
-      <p><strong>Date/time:</strong> ${escapeHtml(booking.eventDate)} ${escapeHtml(booking.startTime)} - ${escapeHtml(booking.booking1EndDate || booking.eventDate)} ${escapeHtml(booking.endTime)}</p>
-      <p><strong>Room(s):</strong> ${escapeHtml(formatList(rooms))}</p>
-      <p><strong>Expected attendees:</strong> ${escapeHtml(booking.attendees)}</p>
-      <p><strong>Contact:</strong> ${escapeHtml(booking.contact)}</p>
+    <section class="sheet">
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">CBRIN Event Run Sheet</p>
+          <h1>${escapeHtml(booking.eventTitle)}</h1>
+        </div>
+        <button class="print-button" onclick="window.print()">Print / Save PDF</button>
+      </div>
+      <div class="meta">
+        <p><strong>Date/time:</strong> ${escapeHtml(booking.eventDate)} ${escapeHtml(booking.startTime)} - ${escapeHtml(booking.booking1EndDate || booking.eventDate)} ${escapeHtml(booking.endTime)}</p>
+        <p><strong>Room(s):</strong> ${escapeHtml(formatList(rooms))}</p>
+        <p><strong>Expected attendees:</strong> ${escapeHtml(booking.attendees)}</p>
+        <p><strong>Contact:</strong> ${escapeHtml(booking.contact)}</p>
     </div>
     <table>
       <thead><tr><th>Time</th><th>Item</th><th>Misc Info</th><th>Jobs</th></tr></thead>
@@ -106,9 +121,12 @@ function buildRunSheetHtml(booking, adminNotes = "") {
       </tbody>
     </table>
     <h2>Event Notes</h2>
-    <p>${escapeHtml(booking.eventDescription || "None")}</p>
-    <p><strong>Support required:</strong> ${escapeHtml(formatList(booking.supportRequired))}</p>
-    <p><strong>Equipment:</strong> ${escapeHtml(formatList(booking.equipmentByRequest))}</p>
+      <div class="notes">
+        <p>${escapeHtml(booking.eventDescription || "None")}</p>
+        <p><strong>Support required:</strong> ${escapeHtml(formatList(booking.supportRequired))}</p>
+        <p><strong>Equipment:</strong> ${escapeHtml(formatList(booking.equipmentByRequest))}</p>
+      </div>
+    </section>
   </main>
 </body>
 </html>`;
