@@ -10,6 +10,12 @@ const availabilityList = document.querySelector("#availabilityList");
 
 let availabilityTimer;
 
+// #region agent log
+function agentLog(runId, hypothesisId, message, data = {}) {
+  fetch('http://127.0.0.1:7543/ingest/80c137fa-069d-428e-8f98-f2649c4c55a5',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'837bd1'},body:JSON.stringify({sessionId:'837bd1',runId,hypothesisId,location:'docs/booking.js',message,data,timestamp:Date.now()})}).catch(()=>{});
+}
+// #endregion
+
 function showMessage(text, type = "info") {
   formMessage.textContent = text;
   formMessage.className = `message message--${type}`;
@@ -78,8 +84,10 @@ async function checkAvailability() {
 
   try {
     const params = new URLSearchParams({ room, date, days: "1" });
+    agentLog("initial-live-test", "H1-calendar-api", "calendar request start", { apiBase: API_BASE, room, date });
     const response = await fetch(`${API_BASE}/api/calendar?${params}`);
     const result = await response.json();
+    agentLog("initial-live-test", "H1-calendar-api", "calendar response", { status: response.status, ok: response.ok, skipped: Boolean(result.skipped), eventCount: Array.isArray(result.events) ? result.events.length : null, hasErrors: Boolean(result.errors?.length) });
 
     if (!response.ok) {
       availabilitySummary.textContent = result.errors?.join(" ") || "Unable to load room availability.";
@@ -112,12 +120,23 @@ bookingForm.addEventListener("submit", async (event) => {
   showMessage("Submitting your booking request...");
 
   try {
+    const submissionPayload = getFormPayload(bookingForm);
+    agentLog("initial-live-test", "H2-booking-submit", "booking submit start", {
+      apiBase: API_BASE,
+      roomsCount: submissionPayload.roomsRequired.length,
+      supportCount: submissionPayload.supportRequired.length,
+      avCount: submissionPayload.avRequirements.length,
+      cateringCount: submissionPayload.cateringRequired.length,
+      hasContact: Boolean(submissionPayload.contact),
+      hasDescription: Boolean(submissionPayload.eventDescription)
+    });
     const response = await fetch(`${API_BASE}/api/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(getFormPayload(bookingForm))
+      body: JSON.stringify(submissionPayload)
     });
     const result = await response.json();
+    agentLog("initial-live-test", "H2-booking-submit", "booking submit response", { status: response.status, ok: response.ok, hasBookingId: Boolean(result.booking?.id), returnedStatus: result.booking?.status || null, hasErrors: Boolean(result.errors?.length), conflictCount: Array.isArray(result.conflicts) ? result.conflicts.length : 0 });
 
     if (!response.ok) {
       const conflictText = result.conflicts?.length
