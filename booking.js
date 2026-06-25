@@ -1,7 +1,7 @@
 const API_BASE = 'https://pesosdageuqdcocwcfqe.supabase.co/functions/v1/booking-app';
 const bookingForm = document.querySelector("#bookingForm");
 const formMessage = document.querySelector("#formMessage");
-const roomInput = document.querySelector("#room");
+const roomInputs = Array.from(document.querySelectorAll('input[name="roomsRequired"]'));
 const eventDateInput = document.querySelector("#eventDate");
 const startTimeInput = document.querySelector("#startTime");
 const endTimeInput = document.querySelector("#endTime");
@@ -43,12 +43,22 @@ function selectedRangeOverlaps(event) {
   return selectedStart < eventEnd && selectedEnd > eventStart;
 }
 
-function renderAvailability(events) {
+function getSelectedRooms() {
+  return roomInputs.filter((input) => input.checked).map((input) => input.value);
+}
+
+function renderAvailability(calendars) {
   availabilityList.replaceChildren();
+  const events = calendars.flatMap((calendar) => (calendar.events || []).map((event) => ({ ...event, room: calendar.room })));
   const conflicts = events.filter(selectedRangeOverlaps);
 
   if (!events.length) {
-    availabilitySummary.textContent = "No existing calendar bookings found for this room on the selected date.";
+    availabilitySummary.textContent = "No existing calendar bookings found for the selected room(s) on this date.";
+    calendars.forEach((calendar) => {
+      const item = document.createElement("li");
+      item.textContent = `${calendar.room}: no existing bookings found.`;
+      availabilityList.append(item);
+    });
     return;
   }
 
@@ -59,39 +69,37 @@ function renderAvailability(events) {
   events.forEach((event) => {
     const item = document.createElement("li");
     item.className = selectedRangeOverlaps(event) ? "availability-conflict" : "";
-    item.textContent = `${formatAvailabilityDate(event.start)} ${formatEventTime(event.start)} - ${formatEventTime(event.end)}: ${event.title}`;
+    item.textContent = `${event.room}: ${formatAvailabilityDate(event.start)} ${formatEventTime(event.start)} - ${formatEventTime(event.end)}: ${event.title}`;
     availabilityList.append(item);
   });
 }
 
 async function checkAvailability() {
-  const room = roomInput.value;
+  const rooms = getSelectedRooms();
   const date = eventDateInput.value;
   availabilityList.replaceChildren();
 
-  if (!room || !date) {
-    availabilitySummary.textContent = "Select a room and date to check existing calendar bookings.";
+  if (!rooms.length || !date) {
+    availabilitySummary.textContent = "Select one or more rooms and a date to check existing calendar bookings.";
     return;
   }
 
   availabilitySummary.textContent = "Checking Google Calendar availability...";
 
   try {
-    const params = new URLSearchParams({ room, date, days: "1" });
-    const response = await fetch(`${API_BASE}/api/calendar?${params}`);
-    const result = await response.json();
-
-    if (!response.ok) {
-      availabilitySummary.textContent = result.errors?.join(" ") || "Unable to load room availability.";
+    const calendars = await Promise.all(rooms.map(async (room) => {
+      const params = new URLSearchParams({ room, date, days: "1" });
+      const response = await fetch(`${API_BASE}/api/calendar?${params}`);
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.errors?.join(" ") || `Unable to load availability for ${room}.`);
+      return result;
+    }));
+    const skipped = calendars.find((calendar) => calendar.skipped);
+    if (skipped) {
+      availabilitySummary.textContent = skipped.reason;
       return;
     }
-
-    if (result.skipped) {
-      availabilitySummary.textContent = result.reason;
-      return;
-    }
-
-    renderAvailability(result.events || []);
+    renderAvailability(calendars);
   } catch {
     availabilitySummary.textContent = "Unable to reach Google Calendar availability.";
   }
@@ -102,7 +110,7 @@ function scheduleAvailabilityCheck() {
   availabilityTimer = window.setTimeout(checkAvailability, 250);
 }
 
-roomInput.addEventListener("change", scheduleAvailabilityCheck);
+roomInputs.forEach((input) => input.addEventListener("change", scheduleAvailabilityCheck));
 eventDateInput.addEventListener("change", scheduleAvailabilityCheck);
 startTimeInput.addEventListener("change", scheduleAvailabilityCheck);
 endTimeInput.addEventListener("change", scheduleAvailabilityCheck);
@@ -131,7 +139,7 @@ bookingForm.addEventListener("submit", async (event) => {
 
     bookingForm.reset();
     availabilityList.replaceChildren();
-    availabilitySummary.textContent = "Select a room and date to check existing calendar bookings.";
+    availabilitySummary.textContent = "Select one or more rooms and a date to check existing calendar bookings.";
     showMessage("Thanks. Your booking request has been submitted for review.", "success");
   } catch {
     showMessage("Unable to reach the booking server. Please try again or contact the office team.", "error");

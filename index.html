@@ -94,25 +94,21 @@
           </label>
 
           <fieldset>
-            <legend>Room/s Required</legend>
+            <legend>Room/s Required and availability</legend>
             <div class="checkbox-grid">
               <label><input type="checkbox" name="roomsRequired" value="Events Room (L5)"> Events Room (L5)</label>
               <label><input type="checkbox" name="roomsRequired" value="The Lab (L5)"> The Lab (L5)</label>
               <label><input type="checkbox" name="roomsRequired" value="River Oak Room (L4)"> River Oak Room (L4)</label>
               <label><input type="checkbox" name="roomsRequired" value="River Oak & Open Plan (L4)"> River Oak &amp; Open Plan (L4)</label>
             </div>
+            <div class="availability-panel" id="availabilityPanel">
+              <div>
+                <h3>Room availability</h3>
+                <p id="availabilitySummary">Select one or more rooms and a date to check existing calendar bookings.</p>
+              </div>
+              <ul id="availabilityList"></ul>
+            </div>
           </fieldset>
-
-          <label>
-            Check availability for
-            <select name="room" id="room" required>
-              <option value="">Select a room</option>
-              <option>Events Room (L5)</option>
-              <option>The Lab (L5)</option>
-              <option>River Oak Room (L4)</option>
-              <option>River Oak & Open Plan (L4)</option>
-            </select>
-          </label>
 
           <fieldset>
             <legend>Room set up</legend>
@@ -125,13 +121,6 @@
             </div>
           </fieldset>
 
-          <div class="availability-panel" id="availabilityPanel">
-            <div>
-              <h3>Room availability</h3>
-              <p id="availabilitySummary">Select a room and date to check existing calendar bookings.</p>
-            </div>
-            <ul id="availabilityList"></ul>
-          </div>
         </div>
 
         <div class="form-section">
