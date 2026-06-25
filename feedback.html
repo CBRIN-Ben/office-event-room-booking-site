@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CBRIN Event Feedback Form</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="https://cbrin.com.au/" aria-label="Canberra Innovation Network">
+      <img src="https://website-cbrin.s3.ap-southeast-2.amazonaws.com/public/cbrin-logo.svg" alt="Canberra Innovation Network">
+      <span>Event feedback</span>
+    </a>
+    <nav class="header-nav">
+      <a class="header-link" href="index.html">Booking form</a>
+      <a class="header-link" href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Feedback</p>
+      <h1>CBRIN Event Feedback Form</h1>
+      <p>Help us to deliver the best events we can by providing some feedback.</p>
+    </section>
+
+    <section class="card">
+      <form id="feedbackForm" class="booking-form">
+        <div class="form-section">
+          <label>
+            Event Name
+            <input name="eventName" required>
+          </label>
+          <fieldset>
+            <legend>Your Role</legend>
+            <div class="checkbox-grid">
+              <label><input type="radio" name="role" value="Facilitator" required> Facilitator</label>
+              <label><input type="radio" name="role" value="Attendee"> Attendee</label>
+            </div>
+          </fieldset>
+          <div class="field-grid">
+            <label>
+              Your Name
+              <input name="name">
+            </label>
+            <label>
+              Organisation/Company
+              <input name="organisation">
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <fieldset>
+            <legend>Overall Assessment of Event</legend>
+            <div class="checkbox-grid">
+              <label><input type="radio" name="assessment" value="Excellent" required> Excellent</label>
+              <label><input type="radio" name="assessment" value="Very Good"> Very Good</label>
+              <label><input type="radio" name="assessment" value="Good"> Good</label>
+              <label><input type="radio" name="assessment" value="Fair"> Fair</label>
+              <label><input type="radio" name="assessment" value="Poor"> Poor</label>
+            </div>
+          </fieldset>
+          <label>
+            Comments on the Event
+            <textarea name="comments" rows="4" placeholder="Any highlights or sticking points"></textarea>
+          </label>
+          <fieldset>
+            <legend>Would you recommend this event to others?</legend>
+            <div class="checkbox-grid">
+              <label><input type="radio" name="recommend" value="Yes"> Yes</label>
+              <label><input type="radio" name="recommend" value="No"> No</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="form-section">
+          <label>
+            If you were to give this event a testimonial for future participants, what would you say?
+            <textarea name="testimonial" rows="4"></textarea>
+          </label>
+          <fieldset>
+            <legend>Do you give permission for us to use your testimonial for marketing purposes?</legend>
+            <div class="checkbox-grid">
+              <label><input type="radio" name="testimonialPermission" value="Yes" required> Yes</label>
+              <label><input type="radio" name="testimonialPermission" value="No"> No</label>
+            </div>
+          </fieldset>
+          <label>
+            If you could change anything about the event, what would it be?
+            <textarea name="changeAnything" rows="4"></textarea>
+          </label>
+        </div>
+
+        <div id="feedbackMessage" class="message" role="status" aria-live="polite"></div>
+        <button type="submit" class="button">Submit</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="feedback.js"></script>
+</body>
+</html>

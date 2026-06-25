@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CBRIN Booking Form</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="https://cbrin.com.au/" aria-label="Canberra Innovation Network">
+      <img src="https://website-cbrin.s3.ap-southeast-2.amazonaws.com/public/cbrin-logo.svg" alt="Canberra Innovation Network">
+      <span>Room bookings</span>
+    </a>
+    <nav class="header-nav">
+      <a class="header-link" href="feedback.html">Feedback</a>
+      <a class="header-link" href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Venue Hire</p>
+      <h1>CBRIN Booking Form</h1>
+      <p>Please complete the form below if you would like to hire one of the Canberra Innovation Network's spaces. We will get back to you with availability and a quote as soon as possible.</p>
+    </section>
+
+    <section class="card">
+      <form id="bookingForm" class="booking-form">
+        <div class="form-section">
+          <h2>Contact</h2>
+          <p class="form-help">Name, organisation, phone number and email.</p>
+          <label>
+            Contact details
+            <textarea name="contact" rows="4" required placeholder="Name, organisation, phone number, email"></textarea>
+          </label>
+        </div>
+
+        <div class="form-section">
+          <h2>Booking 1</h2>
+          <p class="form-help">Use YYYY-MM-DD for date and HH:MM for time.</p>
+          <div class="field-grid">
+            <label>
+              Start date
+              <input name="eventDate" id="eventDate" type="date" required>
+            </label>
+            <label>
+              Start time
+              <input name="startTime" id="startTime" type="time" required>
+            </label>
+            <label>
+              End date
+              <input name="booking1EndDate" type="date" required>
+            </label>
+            <label>
+              End time
+              <input name="endTime" id="endTime" type="time" required>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Booking 2</h2>
+          <p class="form-help">Optional second date/time if your event has another session.</p>
+          <div class="field-grid">
+            <label>
+              Start date
+              <input name="booking2Date" type="date">
+            </label>
+            <label>
+              Start time
+              <input name="booking2StartTime" type="time">
+            </label>
+            <label>
+              End date
+              <input name="booking2EndDate" type="date">
+            </label>
+            <label>
+              End time
+              <input name="booking2EndTime" type="time">
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Event Details</h2>
+          <label>
+            Expected Attendees
+            <input name="attendees" type="number" min="1" required>
+          </label>
+          <label>
+            About your event
+            <textarea name="eventDescription" rows="5" required placeholder="Please include event title, a brief description and any promotional links"></textarea>
+          </label>
+
+          <fieldset>
+            <legend>Room/s Required</legend>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="roomsRequired" value="Events Room (L5)"> Events Room (L5)</label>
+              <label><input type="checkbox" name="roomsRequired" value="The Lab (L5)"> The Lab (L5)</label>
+              <label><input type="checkbox" name="roomsRequired" value="River Oak Room (L4)"> River Oak Room (L4)</label>
+              <label><input type="checkbox" name="roomsRequired" value="River Oak & Open Plan (L4)"> River Oak &amp; Open Plan (L4)</label>
+            </div>
+          </fieldset>
+
+          <label>
+            Check availability for
+            <select name="room" id="room" required>
+              <option value="">Select a room</option>
+              <option>Events Room (L5)</option>
+              <option>The Lab (L5)</option>
+              <option>River Oak Room (L4)</option>
+              <option>River Oak & Open Plan (L4)</option>
+            </select>
+          </label>
+
+          <fieldset>
+            <legend>Room set up</legend>
+            <div class="checkbox-grid">
+              <label><input type="radio" name="layout" value="Theatre" required> Theatre</label>
+              <label><input type="radio" name="layout" value="Classroom"> Classroom</label>
+              <label><input type="radio" name="layout" value="Workshop"> Workshop</label>
+              <label><input type="radio" name="layout" value="U-Shape"> U-Shape</label>
+              <label><input type="radio" name="layout" value="Boardroom"> Boardroom</label>
+            </div>
+          </fieldset>
+
+          <div class="availability-panel" id="availabilityPanel">
+            <div>
+              <h3>Room availability</h3>
+              <p id="availabilitySummary">Select a room and date to check existing calendar bookings.</p>
+            </div>
+            <ul id="availabilityList"></ul>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h2>Support and AV</h2>
+          <fieldset>
+            <legend>Will you require support from CBRIN?</legend>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="supportRequired" value="No"> No</label>
+              <label><input type="checkbox" name="supportRequired" value="Yes - Room set up"> Yes - Room set up</label>
+              <label><input type="checkbox" name="supportRequired" value="Yes - Administration support (printing/copying etc)"> Yes - Administration support (printing/copying etc)</label>
+              <label><input type="checkbox" name="supportRequired" value="Yes - AV/Tech support"> Yes - AV/Tech support</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>AV Requirements</legend>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="avRequirements" value="None"> None</label>
+              <label><input type="checkbox" name="avRequirements" value="Presentation only (no audio)"> Presentation only (no audio)</label>
+              <label><input type="checkbox" name="avRequirements" value="Online event capabilities"> Online event capabilities</label>
+              <label><input type="checkbox" name="avRequirements" value="In person event capabilities (mics/lapel mics etc.)"> In person event capabilities (mics/lapel mics etc.)</label>
+              <label><input type="checkbox" name="avRequirements" value="Hybrid event capabilities"> Hybrid event capabilities</label>
+            </div>
+          </fieldset>
+
+          <label>
+            Please provide more detail about the support required
+            <textarea name="supportDetails" rows="4"></textarea>
+          </label>
+
+          <fieldset>
+            <legend>Equipment by request</legend>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="equipmentByRequest" value="Lectern"> Lectern</label>
+              <label><input type="checkbox" name="equipmentByRequest" value="Stage platform"> Stage platform</label>
+              <label><input type="checkbox" name="equipmentByRequest" value="Whiteboard"> Whiteboard</label>
+              <label><input type="checkbox" name="equipmentByRequest" value="Registration desk"> Registration desk</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="form-section">
+          <h2>Catering</h2>
+          <fieldset>
+            <legend>Catering Required?</legend>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="cateringRequired" value="Yes - Lunch (Catering) - $22 per person"> Yes - Lunch (Catering) - $22 per person</label>
+              <label><input type="checkbox" name="cateringRequired" value="Yes - Morning/Afternoon tea - $10 option"> Yes - Morning/Afternoon tea - $10 option</label>
+              <label><input type="checkbox" name="cateringRequired" value="Yes - Morning/Afternoon tea - $12 option"> Yes - Morning/Afternoon tea - $12 option</label>
+              <label><input type="checkbox" name="cateringRequired" value="Will arrange ourselves"> Will arrange ourselves</label>
+              <label><input type="checkbox" name="cateringRequired" value="None"> None</label>
+            </div>
+          </fieldset>
+
+          <label>
+            If catering is required, please list dietary requirements
+            <textarea name="dietaryRequirements" rows="4" required placeholder="'N' if no catering required. These can be confirmed closer to the date."></textarea>
+          </label>
+        </div>
+
+        <div class="form-section">
+          <h2>Event Code of Conduct</h2>
+          <label class="inline-check">
+            <input type="checkbox" name="codeOfConductAccepted" value="Yes" required>
+            I accept the Canberra Innovation Network's Event Code of Conduct
+          </label>
+        </div>
+
+        <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+        <button type="submit" class="button">Submit</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="booking.js"></script>
+</body>
+</html>

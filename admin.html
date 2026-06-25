@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin - Event Room Bookings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Canberra Innovation Network room bookings">
+      <img src="https://website-cbrin.s3.ap-southeast-2.amazonaws.com/public/cbrin-logo.svg" alt="Canberra Innovation Network">
+      <span>Room bookings</span>
+    </a>
+    <a class="header-link" href="index.html">Booking form</a>
+  </header>
+
+  <main class="page-shell page-shell--wide">
+    <section class="hero hero--compact">
+      <p class="eyebrow">Admin</p>
+      <h1>Event room booking requests</h1>
+      <p>Review submitted requests, approve or reject bookings, and generate run sheets.</p>
+    </section>
+
+    <section class="card admin-login" id="adminLogin">
+      <label>
+        Admin key
+        <input id="adminKey" type="password" autocomplete="current-password" placeholder="Enter admin key">
+      </label>
+      <button id="loadBookings" class="button">Load bookings</button>
+    </section>
+
+    <section class="admin-toolbar">
+      <label>
+        Filter
+        <select id="statusFilter">
+          <option value="all">All bookings</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </label>
+      <button id="refreshBookings" class="button button--secondary">Refresh</button>
+    </section>
+
+    <div id="adminMessage" class="message" role="status" aria-live="polite"></div>
+    <section id="bookingsList" class="booking-list"></section>
+  </main>
+
+  <template id="bookingCardTemplate">
+    <article class="booking-card">
+      <div class="booking-card__header">
+        <div>
+          <span class="status-pill"></span>
+          <h2></h2>
+          <p class="booking-summary"></p>
+        </div>
+        <div class="header-actions">
+          <a class="button button--secondary run-sheet-link" target="_blank" rel="noopener">Preview run sheet</a>
+          <a class="button button--secondary run-sheet-download-link">Download run sheet</a>
+        </div>
+      </div>
+      <dl class="details-grid"></dl>
+      <label>
+        Admin notes
+        <textarea class="admin-notes" rows="3" placeholder="Add internal notes before approving or rejecting"></textarea>
+      </label>
+      <div class="booking-card__actions">
+        <button class="button approve-button">Approve</button>
+        <button class="button button--danger reject-button">Reject</button>
+        <button class="button button--secondary pending-button">Mark pending</button>
+      </div>
+      <p class="calendar-status"></p>
+    </article>
+  </template>
+
+  <script src="admin.js"></script>
+</body>
+</html>
