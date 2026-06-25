@@ -9,12 +9,6 @@ const bookingCardTemplate = document.querySelector("#bookingCardTemplate");
 
 let bookings = [];
 
-// #region agent log
-function agentLog(runId, hypothesisId, message, data = {}) {
-  fetch('http://127.0.0.1:7543/ingest/80c137fa-069d-428e-8f98-f2649c4c55a5',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'837bd1'},body:JSON.stringify({sessionId:'837bd1',runId,hypothesisId,location:'docs/admin.js',message,data,timestamp:Date.now()})}).catch(()=>{});
-}
-// #endregion
-
 function getAdminKey() {
   return adminKeyInput.value.trim();
 }
@@ -58,10 +52,8 @@ function detailRows(booking) {
 
 async function previewRunSheet(bookingId) {
   try {
-    agentLog("initial-live-test", "H5-runsheet-preview", "runsheet request start", { apiBase: API_BASE, bookingIdPresent: Boolean(bookingId), hasAdminKey: Boolean(getAdminKey()) });
     const response = await fetch(`${API_BASE}/admin/runsheet/${bookingId}?adminKey=${encodeURIComponent(getAdminKey())}`);
     const body = await response.text();
-    agentLog("initial-live-test", "H5-runsheet-preview", "runsheet response", { status: response.status, ok: response.ok, bodyStartsHtml: body.trim().toLowerCase().startsWith("<!doctype html>"), bodyLength: body.length });
     if (!response.ok) {
       showAdminMessage("Unable to load run sheet.", "error");
       return;
@@ -131,18 +123,15 @@ function renderBookings() {
 async function loadBookings() {
   if (!getAdminKey()) {
     showAdminMessage("Enter the admin key first.", "error");
-    agentLog("initial-live-test", "H4-admin-api", "admin load blocked missing key", { hasAdminKey: false });
     return;
   }
 
   showAdminMessage("Loading bookings...");
   try {
-    agentLog("initial-live-test", "H4-admin-api", "admin load request start", { apiBase: API_BASE, hasAdminKey: true });
     const response = await fetch(`${API_BASE}/api/bookings`, {
       headers: { "X-Admin-Key": getAdminKey() }
     });
     const result = await response.json();
-    agentLog("initial-live-test", "H4-admin-api", "admin load response", { status: response.status, ok: response.ok, bookingCount: Array.isArray(result.bookings) ? result.bookings.length : null, hasErrors: Boolean(result.errors?.length) });
 
     if (!response.ok) {
       showAdminMessage(result.errors?.join(" ") || "Unable to load bookings.", "error");
@@ -160,7 +149,6 @@ async function loadBookings() {
 async function updateBooking(bookingId, action, adminNotes) {
   showAdminMessage("Updating booking...");
   try {
-    agentLog("initial-live-test", "H4-admin-api", "admin update request start", { apiBase: API_BASE, action, bookingIdPresent: Boolean(bookingId), hasAdminKey: Boolean(getAdminKey()), hasAdminNotes: Boolean(adminNotes) });
     const response = await fetch(`${API_BASE}/api/bookings/${bookingId}`, {
       method: "PATCH",
       headers: {
@@ -170,7 +158,6 @@ async function updateBooking(bookingId, action, adminNotes) {
       body: JSON.stringify({ action, adminNotes })
     });
     const result = await response.json();
-    agentLog("initial-live-test", "H4-admin-api", "admin update response", { status: response.status, ok: response.ok, returnedStatus: result.booking?.status || null, hasCalendarLink: Boolean(result.booking?.calendar?.htmlLink), hasCalendarError: Boolean(result.booking?.calendar?.error), hasErrors: Boolean(result.errors?.length), conflictCount: Array.isArray(result.conflicts) ? result.conflicts.length : 0 });
 
     if (!response.ok) {
       const conflictText = result.conflicts?.length
